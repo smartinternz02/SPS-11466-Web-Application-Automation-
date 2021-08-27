@@ -1,0 +1,269 @@
+﻿<process name="Excel test" version="1.0" bpversion="6.10.2.42081" narrative="" byrefcollection="true" preferredid="dab1ba95-81c1-4744-9d2a-eec907adfad8">
+  <view>
+    <camerax>126</camerax>
+    <cameray>-37</cameray>
+    <zoom version="2">1.0625</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <stage stageid="151cb0f2-a127-4d0f-b342-6f5b7a2aae7c" name="Start" type="Start">
+    <display x="-420" y="-30" />
+    <onsuccess>f2734f7b-75fc-4ecf-8647-b0b69563ecc9</onsuccess>
+  </stage>
+  <stage stageid="f1267baf-cc87-45cf-be2b-ff5888568249" name="End" type="End">
+    <display x="-210" y="105" />
+  </stage>
+  <stage stageid="dfb1d4b0-7356-4a3f-bc06-057d68de80f4" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-165" w="150" h="90" />
+  </stage>
+  <stage stageid="f2734f7b-75fc-4ecf-8647-b0b69563ecc9" name="MS Excel VBO::Create Instance" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-345" y="-30" />
+    <inputs>
+      <input type="flag" name="Enable Events" friendlyname="Enable Events" narrative="Flag to indicate that events should be enabled / disabled on the attached instance - defaulted to True" expr="" />
+    </inputs>
+    <outputs>
+      <output type="number" name="handle" friendlyname="handle" narrative="An integer which can be used to identify the created instance in subsequent actions" stage="handle" />
+    </outputs>
+    <onsuccess>904e6bed-fdfc-4846-8fac-8bd2f4f64e01</onsuccess>
+    <resource object="MS Excel VBO" action="Create Instance" />
+  </stage>
+  <stage stageid="f60ec7e8-fbf0-484d-844e-d4f7e9e96b91" name="handle" type="Data">
+    <display x="-345" y="-75" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="904e6bed-fdfc-4846-8fac-8bd2f4f64e01" name="MS Excel VBO::Open Workbook" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-255" y="-30" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the required workbook should be opened. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="File name" friendlyname="File name" narrative="The path and name of the file which should be opened." expr="&quot;C:\Users\Tasneem\Desktop\currency converter.xlsx&quot;" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name used by Excel to identify the workbook - usually this is the file name (without the path)." stage="Workbook Name" />
+    </outputs>
+    <onsuccess>fe0c3b14-fd34-494f-aceb-8bb10891f98e</onsuccess>
+    <resource object="MS Excel VBO" action="Open Workbook" />
+  </stage>
+  <stage stageid="ea8d34c0-57c9-4247-a7e9-2af0e70bc3bf" name="Workbook Name" type="Data">
+    <display x="-255" y="-75" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="fe0c3b14-fd34-494f-aceb-8bb10891f98e" name="MS Excel VBO::Get Worksheet As Collection" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-165" y="-30" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the worksheet which should be retrieved resides. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook which contains the sheet required. The default empty text indicates the currently active workbook on the specified instance." expr="[Workbook Name]" />
+      <input type="text" name="Worksheet Name" friendlyname="Worksheet Name" narrative="The name of the worksheet within the specified workbook which should be written to a collection. The default empty text indicates the currently active worksheet within the specified workbook." expr="&quot;Sheet1&quot;" />
+      <input type="text" name="Fetch Data With Method" friendlyname="Fetch Data With Method" narrative="The method used to fetch data from cells in the worksheet. Options include Text, Value, and Value2. The default indicates Value will be used." expr="" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Data" friendlyname="Data" narrative="The collection containing the data from the specified worksheet - the column IDs will be gleaned from the first row on the sheet being retrieved." stage="DataFromExcel" />
+    </outputs>
+    <onsuccess>2c94abe1-415f-469c-bba9-5499997d2d0d</onsuccess>
+    <resource object="MS Excel VBO" action="Get Worksheet As Collection" />
+  </stage>
+  <stage stageid="5f632e56-3cb4-4b6b-ab3e-266a1699fb8a" name="DataFromExcel" type="Collection">
+    <display x="-165" y="-75" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="6dd8e094-585a-40c4-abc0-57a410227022" name="Utility - Collection Manipulation::Read Collection Field" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="30" y="-30" />
+    <inputs>
+      <input type="number" name="Row Index" friendlyname="Row Index" narrative="The row index within the collection to read from. The index is from 0 to N-1 (where N is the total number of rows in the collection)." expr="[count]" />
+      <input type="collection" name="Collection" friendlyname="Collection" narrative="The collection to read." expr="[DataFromExcel]" />
+      <input type="text" name="Field Name" friendlyname="Field Name" narrative="The field within the collection to read." expr="&quot;Amount&quot;" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Value Read" friendlyname="Value Read" narrative="The value of the requested field as text." stage="Amount read" />
+    </outputs>
+    <onsuccess>1c2136fc-a731-4b7a-84b7-2e16b7c0e1b6</onsuccess>
+    <resource object="Utility - Collection Manipulation" action="Read Collection Field" />
+  </stage>
+  <stage stageid="860cf172-0218-439e-a9fd-a52afc6e987f" name="Amount read" type="Data">
+    <display x="30" y="15" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="aa921aec-dc04-49f8-af4b-bde26ccec7c8" name="count" type="Data">
+    <display x="660" y="150" />
+    <datatype>number</datatype>
+    <initialvalue>0</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="d85e368c-24cd-4811-899f-b2e5b83a9457" name="updating count" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <display x="645" y="105" />
+    <onsuccess>e67d8af3-1e5c-4df1-9c55-bf06ba97997c</onsuccess>
+    <calculation expression="[count]+1" stage="count" />
+  </stage>
+  <stage stageid="4fe96a30-ad1c-48da-b079-030a11b173b7" name="Loop Start1" type="LoopStart">
+    <loginhibit onsuccess="true" />
+    <display x="30" y="-135" />
+    <onsuccess>6dd8e094-585a-40c4-abc0-57a410227022</onsuccess>
+    <groupid>bb211a36-ed90-431d-be70-a7a2568855c5</groupid>
+    <looptype>ForEach</looptype>
+    <loopdata>DataFromExcel</loopdata>
+  </stage>
+  <stage stageid="e67d8af3-1e5c-4df1-9c55-bf06ba97997c" name="Loop End1" type="LoopEnd">
+    <loginhibit onsuccess="true" />
+    <display x="555" y="105" />
+    <onsuccess>2b372102-26ac-4140-b656-bbd20b85acd8</onsuccess>
+    <groupid>bb211a36-ed90-431d-be70-a7a2568855c5</groupid>
+  </stage>
+  <stage stageid="27b5a0eb-9e9e-4c31-b055-9134f389de71" name="Anchor1" type="Anchor">
+    <loginhibit onsuccess="true" />
+    <display x="-30" y="-30" w="10" h="10" />
+    <onsuccess>4fdd7b99-345c-4c26-b113-c270916a4031</onsuccess>
+  </stage>
+  <stage stageid="4fdd7b99-345c-4c26-b113-c270916a4031" name="Anchor2" type="Anchor">
+    <loginhibit onsuccess="true" />
+    <display x="-30" y="-135" w="10" h="10" />
+    <onsuccess>4fe96a30-ad1c-48da-b079-030a11b173b7</onsuccess>
+  </stage>
+  <stage stageid="89ec3f39-2e90-40bb-9074-cf4de25013df" name="Utility - Collection Manipulation::Read Collection Field" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="195" y="-30" />
+    <inputs>
+      <input type="number" name="Row Index" friendlyname="Row Index" narrative="The row index within the collection to read from. The index is from 0 to N-1 (where N is the total number of rows in the collection)." expr="[count]" />
+      <input type="collection" name="Collection" friendlyname="Collection" narrative="The collection to read." expr="[DataFromExcel]" />
+      <input type="text" name="Field Name" friendlyname="Field Name" narrative="The field within the collection to read." expr="&quot;From&quot;" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Value Read" friendlyname="Value Read" narrative="The value of the requested field as text." stage="From read" />
+    </outputs>
+    <onsuccess>b656b86b-676a-4dec-889f-108e3f54da6d</onsuccess>
+    <resource object="Utility - Collection Manipulation" action="Read Collection Field" />
+  </stage>
+  <stage stageid="b9ac6fcf-4a9b-4f4e-95aa-ba7c2610ed8a" name="Utility - Collection Manipulation::Read Collection Field" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="360" y="-30" />
+    <inputs>
+      <input type="collection" name="Collection" friendlyname="Collection" narrative="The collection to read." expr="[DataFromExcel]" />
+      <input type="text" name="Field Name" friendlyname="Field Name" narrative="The field within the collection to read." expr="&quot;To&quot;" />
+      <input type="number" name="Row Index" friendlyname="Row Index" narrative="The row index within the collection to read from. The index is from 0 to N-1 (where N is the total number of rows in the collection)." expr="[count]" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Value Read" friendlyname="Value Read" narrative="The value of the requested field as text." stage="To read" />
+    </outputs>
+    <onsuccess>4bfaedce-bc5c-49dd-b612-36754ac211ee</onsuccess>
+    <resource object="Utility - Collection Manipulation" action="Read Collection Field" />
+  </stage>
+  <stage stageid="8c64273b-c670-4fdc-a2bb-963da05d2bae" name="From read" type="Data">
+    <display x="195" y="-75" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="2536125f-94d8-4f7c-be0d-68cfeabad6b1" name="To read" type="Data">
+    <display x="360" y="-75" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="2c94abe1-415f-469c-bba9-5499997d2d0d" name="currency conversion::Launch" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-75" y="-30" />
+    <onsuccess>27b5a0eb-9e9e-4c31-b055-9134f389de71</onsuccess>
+    <resource object="currency conversion" action="Launch" />
+  </stage>
+  <stage stageid="b656b86b-676a-4dec-889f-108e3f54da6d" name="currency conversion::Input" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="270" y="-30" />
+    <inputs>
+      <input type="text" name="Input" friendlyname="Input" expr="[From read]" />
+    </inputs>
+    <onsuccess>b9ac6fcf-4a9b-4f4e-95aa-ba7c2610ed8a</onsuccess>
+    <resource object="currency conversion" action="Input" />
+  </stage>
+  <stage stageid="4bfaedce-bc5c-49dd-b612-36754ac211ee" name="currency conversion::Output" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="435" y="-30" />
+    <inputs>
+      <input type="text" name="Output" friendlyname="Output" expr="[To read]" />
+    </inputs>
+    <onsuccess>0cbdf62b-352c-465a-9214-8766c86d0a44</onsuccess>
+    <resource object="currency conversion" action="Output" />
+  </stage>
+  <stage stageid="1c2136fc-a731-4b7a-84b7-2e16b7c0e1b6" name="currency conversion::Amount" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="105" y="-30" />
+    <inputs>
+      <input type="text" name="Amount" friendlyname="Amount" expr="[Amount read]" />
+    </inputs>
+    <onsuccess>89ec3f39-2e90-40bb-9074-cf4de25013df</onsuccess>
+    <resource object="currency conversion" action="Amount" />
+  </stage>
+  <stage stageid="0cbdf62b-352c-465a-9214-8766c86d0a44" name="currency conversion::Convert button" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="510" y="-30" />
+    <onsuccess>83cb339a-0c42-4993-8d4a-829a73c97b86</onsuccess>
+    <resource object="currency conversion" action="Convert button" />
+  </stage>
+  <stage stageid="83cb339a-0c42-4993-8d4a-829a73c97b86" name="currency conversion::Result" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="645" y="-30" />
+    <outputs>
+      <output type="text" name="Result" friendlyname="Result" stage="DataFromExcel.Result" />
+    </outputs>
+    <onsuccess>d85e368c-24cd-4811-899f-b2e5b83a9457</onsuccess>
+    <resource object="currency conversion" action="Result" />
+  </stage>
+  <stage stageid="2b372102-26ac-4140-b656-bbd20b85acd8" name="MS Excel VBO::Write Collection" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="405" y="105" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the specified collection should be written. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook within which the data should be written. The default empty value indicates the current workbook within the specified instance." expr="[Workbook Name]" />
+      <input type="collection" name="Collection" friendlyname="Collection" narrative="The collection containing the data which should be written to the worksheet." expr="[DataFromExcel]" />
+      <input type="text" name="Worksheet Name" friendlyname="Worksheet Name" narrative="The name of the worksheet on which the given data should be written. The default empty value indicates the current sheet within the specified workbook." expr="&quot;Sheet1&quot;" />
+      <input type="text" name="Cell Reference" friendlyname="Cell Reference" narrative="The reference at which the collection should be written." expr="&quot;A1&quot;" />
+      <input type="flag" name="Include Column Names" friendlyname="Include Column Names" narrative="True to indicate that the column names from the collection should be written out as the first row; False to ignore the column names and just write out the data." expr="True" />
+    </inputs>
+    <onsuccess>db19c418-d500-4712-b1d3-a42beb77cf0b</onsuccess>
+    <resource object="MS Excel VBO" action="Write Collection" />
+  </stage>
+  <stage stageid="db19c418-d500-4712-b1d3-a42beb77cf0b" name="MS Excel VBO::Close Instance" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="315" y="105" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance to be closed. Zero indicates the currently active instance." expr="[handle]" />
+      <input type="flag" name="Save Changes" friendlyname="Save Changes" narrative="True to save the changes to the open workbooks on the instance, False to discard any changes. Default is False." expr="True" />
+    </inputs>
+    <onsuccess>d97e2689-7844-4f61-8289-a857201a61e7</onsuccess>
+    <resource object="MS Excel VBO" action="Close Instance" />
+  </stage>
+  <stage stageid="30a3ce08-1d66-464f-b78f-2e7fdd4e51ff" name="currency conversion::Terminate" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-105" y="105" />
+    <onsuccess>f1267baf-cc87-45cf-be2b-ff5888568249</onsuccess>
+    <resource object="currency conversion" action="Terminate" />
+  </stage>
+  <stage stageid="d97e2689-7844-4f61-8289-a857201a61e7" name="currency conversion::Open Gmail" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="180" y="105" />
+    <onsuccess>84ffda72-037f-4ccc-b993-4859cbbd4bb5</onsuccess>
+    <resource object="currency conversion" action="Open Gmail" />
+  </stage>
+  <stage stageid="84ffda72-037f-4ccc-b993-4859cbbd4bb5" name="currency conversion::WhatsApp open" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="45" y="105" />
+    <onsuccess>30a3ce08-1d66-464f-b78f-2e7fdd4e51ff</onsuccess>
+    <resource object="currency conversion" action="WhatsApp open" />
+  </stage>
+</process>
